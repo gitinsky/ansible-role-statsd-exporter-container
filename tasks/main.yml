@@ -4,6 +4,11 @@
   tags:
     - docker
 
+- name: put statsd_mapping.conf
+  template: src=statsd_mapping.conf dest={{ ext_statsd_exporter_conf_volume }}/statsd_mapping.conf
+  tags:
+    - docker
+
 - name: start statsd-exporter container
   docker:
     image: prom/statsd-exporter
@@ -20,6 +25,6 @@
     name: statsd-exporter
     restart_policy: always
     restart_policy_retry: 0
-    command: /bin/go-run -statsd.mapping-config=/tmp/statsd_mapping.conf
+    command: -statsd.mapping-config=/tmp/statsd_mapping.conf
   tags:
     - docker
