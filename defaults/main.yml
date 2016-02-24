@@ -1,0 +1,1 @@
+ext_statsd_exporter_conf_volume: /var/lib/docker-extvols/stats-exporter-conf

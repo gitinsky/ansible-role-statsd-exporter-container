@@ -1,0 +1,25 @@
+---
+- name: create ext volume
+  file: state=directory path={{ ext_statsd_exporter_conf_volume }}
+  tags:
+    - docker
+
+- name: start statsd-exporter container
+  docker:
+    image: prom/statsd-exporter
+    state: started
+    read_only: yes
+    hostname: "se-{{ ansible_hostname }}"
+    dns:
+      - 8.8.8.8
+    ports:
+      - "9125:9125/udp"
+      - "9102:9102"
+    volumes:
+      - "{{ ext_statsd_exporter_conf_volume }}/statsd_mapping.conf:/tmp/statsd_mapping.conf"
+    name: statsd-exporter
+    restart_policy: always
+    restart_policy_retry: 0
+    command: /bin/go-run -statsd.mapping-config=/tmp/statsd_mapping.conf
+  tags:
+    - docker
